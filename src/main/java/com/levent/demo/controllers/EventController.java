@@ -7,10 +7,13 @@ import com.levent.demo.repository.CategoryRepository;
 import com.levent.demo.repository.CityRepository;
 import com.levent.demo.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class EventController {
@@ -32,6 +35,16 @@ public class EventController {
         return eventRepository.findAll();
     }
 
+    @QueryMapping
+    public Events oneEvent(@Argument Integer idEvent){
+        Optional<Events> eventsOptional = eventRepository.findById(idEvent);
+        if (eventsOptional.isEmpty()){
+            throw new RuntimeException("Event not found");
+        }
+        return eventsOptional.get();
+    }
+
+    @MutationMapping
     public Events createEvent(Integer idEvent,
                               String nameEvent, String dateEvent,
                               Integer cityId,
@@ -54,7 +67,7 @@ public class EventController {
 
         return eventRepository.save(events);
     }
-
+    @MutationMapping
     public Events updateEvent(Integer idEvent,
                               String nameEvent, String dateEvent,
                               Integer cityId,
@@ -80,7 +93,7 @@ public class EventController {
 
         return eventRepository.save(events);
     }
-
+    @MutationMapping
     public Boolean deleteEvent(Integer idEvent){
         eventRepository.deleteById(idEvent);
         return true;

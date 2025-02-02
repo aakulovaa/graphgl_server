@@ -1,19 +1,24 @@
 package com.levent.demo.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Events {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer idEvent;
     String nameEvent;
     String dateEvent;
     @ManyToOne @JoinColumn(name = "id_city", nullable = false)
+            @JsonBackReference
     CityEvent cityEvent;
     String addressEvent;
     String descriptionEvent;
     Integer countOfPeople;
     @ManyToOne @JoinColumn(name = "id_category", nullable = false)
+            @JsonBackReference
     CategoryEvent categoryEvent;
     String imageEvent;
 
