@@ -1,0 +1,46 @@
+type Query {
+    allEvents: [Event]
+    oneEvent(id: ID!): Event
+
+    allCities: [CityEvent]
+    oneCity(id: ID!): CityEvent
+
+    allCategories: [CategoryEvent]
+    oneCategory(id: ID!): CategoryEvent
+}
+
+type Mutation {
+    createEvent(nameEvent: String, dateEvent:String,
+        cityId: ID!, addressEvent: String,
+        descriptionEvent: String, countOfPeople: Int,
+        categoryId: ID!, imageEvent: String): Event!
+    updateEvent(idEvent: ID!, nameEvent: String, dateEvent:String,
+    cityId: ID, addressEvent: String,
+    descriptionEvent: String, countOfPeople: Int,
+    categoryId: ID, imageEvent: String): Event!
+    deleteEvent(idEvent:ID!): Boolean
+}
+
+type Event {
+    idEvent: ID!
+    nameEvent: String
+    dateEvent: String
+    cityEvent: CityEvent
+    addressEvent: String
+    descriptionEvent: String
+    countOfPeople: Int
+    categoryEvent: CategoryEvent
+    imageEvent: String
+}
+
+type CityEvent {
+    idCity: ID!
+    nameCity: String
+    events: [Event]
+}
+
+type CategoryEvent {
+    idCategory: ID!
+    nameCategory: String
+    events: [Event]
+}
