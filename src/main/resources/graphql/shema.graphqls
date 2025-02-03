@@ -1,12 +1,12 @@
 type Query {
     allEvents: [Event]
-    oneEvent(id: ID!): Event
+    oneEvent(idEvent: ID!): Event
 
     allCities: [CityEvent]
     oneCity(idCity: ID!): CityEvent
 
     allCategories: [CategoryEvent]
-    oneCategory(id: ID!): CategoryEvent
+    oneCategory(idCategory: ID!): CategoryEvent
 }
 
 type Mutation {

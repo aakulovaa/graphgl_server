@@ -1,7 +1,6 @@
 package com.levent.demo.controllers;
 
 import com.levent.demo.models.CategoryEvent;
-import com.levent.demo.models.CityEvent;
 import com.levent.demo.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
