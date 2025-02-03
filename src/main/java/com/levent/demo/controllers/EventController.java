@@ -45,13 +45,12 @@ public class EventController {
     }
 
     @MutationMapping
-    public Events createEvent(Integer idEvent,
-                              String nameEvent, String dateEvent,
-                              Integer cityId,
-                              String addressEvent,
-                              String descriptionEvent, Integer countOfPeople,
-                              Integer categoryId,
-                              String imageEvent){
+    public Events createEvent(@Argument String nameEvent,@Argument String dateEvent,
+                              @Argument Integer cityId,
+                              @Argument String addressEvent,
+                              @Argument String descriptionEvent, @Argument Integer countOfPeople,
+                              @Argument Integer categoryId,
+                              @Argument String imageEvent){
         CityEvent cityEvent = cityRepository.findById(cityId).orElseThrow(()->new RuntimeException("City not found"));
         CategoryEvent categoryEvent = categoryRepository.findById(categoryId).orElseThrow(()->new RuntimeException("Category not found"));
 
@@ -68,13 +67,13 @@ public class EventController {
         return eventRepository.save(events);
     }
     @MutationMapping
-    public Events updateEvent(Integer idEvent,
-                              String nameEvent, String dateEvent,
-                              Integer cityId,
-                              String addressEvent,
-                              String descriptionEvent, Integer countOfPeople,
-                              Integer categoryId,
-                              String imageEvent){
+    public Events updateEvent(@Argument Integer idEvent,
+                              @Argument String nameEvent,@Argument String dateEvent,
+                              @Argument Integer cityId,
+                              @Argument String addressEvent,
+                              @Argument String descriptionEvent,@Argument Integer countOfPeople,
+                              @Argument Integer categoryId,
+                              @Argument String imageEvent){
         Events events = eventRepository.findById(idEvent).orElseThrow(()->new RuntimeException("Event not found"));
         if(nameEvent != null) events.setNameEvent(nameEvent);
         if(dateEvent!=null) events.setDateEvent(dateEvent);
@@ -94,7 +93,7 @@ public class EventController {
         return eventRepository.save(events);
     }
     @MutationMapping
-    public Boolean deleteEvent(Integer idEvent){
+    public Boolean deleteEvent(@Argument Integer idEvent){
         eventRepository.deleteById(idEvent);
         return true;
     }

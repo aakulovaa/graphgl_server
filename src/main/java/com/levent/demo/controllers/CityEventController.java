@@ -1,7 +1,6 @@
 package com.levent.demo.controllers;
 
 import com.levent.demo.models.CityEvent;
-import com.levent.demo.models.Events;
 import com.levent.demo.repository.CityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -32,10 +31,28 @@ public class CityEventController {
         }
         return cityEventOptional.get();
     }
+
     @MutationMapping
-    public CityEvent createCity(String nameCity){
+    public CityEvent createCity(@Argument String nameCity){
         CityEvent cityEvent = new CityEvent();
         cityEvent.setNameCity(nameCity);
-        return cityRepository.save(cityEvent);
+        cityRepository.save(cityEvent);
+        return cityEvent;
+    }
+
+    @MutationMapping
+    public CityEvent updateCity(@Argument Integer idCity,@Argument String nameCity){
+       CityEvent cityEvent = cityRepository.findById(idCity).orElseThrow(()->new RuntimeException("City not found"));
+       if (nameCity != null){
+           cityEvent.setNameCity(nameCity);
+       }
+
+       return cityRepository.save(cityEvent);
+    }
+
+    @MutationMapping
+    public Boolean deleteCity(@Argument Integer idCity){
+        cityRepository.deleteById(idCity);
+        return true;
     }
 }

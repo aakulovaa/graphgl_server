@@ -2,7 +2,6 @@ package com.levent.demo.controllers;
 
 import com.levent.demo.models.CategoryEvent;
 import com.levent.demo.models.CityEvent;
-import com.levent.demo.models.Events;
 import com.levent.demo.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -34,10 +33,26 @@ public class CategoryEventController {
         return categoryEventOptional.get();
     }
     @MutationMapping
-    public CategoryEvent createCategory(String nameCategory){
+    public CategoryEvent createCategory(@Argument String nameCategory){
         CategoryEvent categoryEvent = new CategoryEvent();
         categoryEvent.setNameCategory(nameCategory);
         return categoryRepository.save(categoryEvent);
+    }
+
+    @MutationMapping
+    public CategoryEvent updateCategory(@Argument Integer idCategory,@Argument String nameCategory){
+        CategoryEvent categoryEvent = categoryRepository.findById(idCategory).orElseThrow(()->new RuntimeException("Category not found"));
+        if (nameCategory != null){
+            categoryEvent.setNameCategory(nameCategory);
+        }
+
+        return categoryRepository.save(categoryEvent);
+    }
+
+    @MutationMapping
+    public Boolean deleteCategory(@Argument Integer idCategory){
+        categoryRepository.deleteById(idCategory);
+        return true;
     }
 
 }

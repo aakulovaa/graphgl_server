@@ -21,8 +21,12 @@ type Mutation {
     deleteEvent(idEvent:ID!): Boolean
 
     createCity(nameCity: String): CityEvent!
+    updateCity(idCity: ID!, nameCity:String): CityEvent!
+    deleteCity(idCity: ID!): Boolean
 
     createCategory(nameCategory: String): CategoryEvent!
+    updateCategory(idCategory: ID!, nameCategory: String): CategoryEvent!
+    deleteCategory(idCategory: ID!): Boolean
 }
 
 type Event {
