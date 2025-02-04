@@ -16,6 +16,7 @@ public class Events {
     CityEvent cityEvent;
     String addressEvent;
     String descriptionEvent;
+    @Column(columnDefinition = "integer default 0")
     Integer countOfPeople;
     @ManyToOne @JoinColumn(name = "id_category", nullable = false)
             @JsonBackReference

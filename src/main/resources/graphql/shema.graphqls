@@ -7,6 +7,18 @@ type Query {
 
     allCategories: [CategoryEvent]
     oneCategory(idCategory: ID!): CategoryEvent
+
+    allChats: [Chats]
+    oneChat(idChat: ID!): Chats
+
+    allNews: [News]
+    oneNews(idNews: ID!): News
+
+    allNotifications: [Notifications]
+    oneNotification(idNotification: ID!): Notifications
+
+    allUsers: [Users]
+    oneUser(idUser: ID!): Users
 }
 
 type Mutation {
@@ -27,6 +39,27 @@ type Mutation {
     createCategory(nameCategory: String): CategoryEvent!
     updateCategory(idCategory: ID!, nameCategory: String): CategoryEvent!
     deleteCategory(idCategory: ID!): Boolean
+
+    createChat(userSenderId: ID!, userReceiverId: ID!, messageChat: String,sendAt: String ): Chats!
+    updateChat(idChat: ID!, userSenderId: ID!, userReceiverId: ID!, messageChat: String,sendAt: String): Chats!
+    deleteChat(idChat: ID!): Boolean
+
+    createNews(userNewsId: ID!, titleNews: String, descNews: String, imgSrcNews: String, createdAt: String): News!
+    updateNews(idNews: ID!, userNewsId: ID!, titleNews: String, descNews: String, imgSrcNews: String, createdAt: String): News!
+    deleteNews(idNews: ID!): Boolean
+
+    createNotification(userNotificationId: ID!, nameNotification: String, imgSrcNotification: String): Notifications!
+    updateNotification(idNotification: ID!, userNotificationId: ID!,
+        nameNotification: String, imgSrcNotification: String): Notifications!
+    deleteNotification(idNotification: ID!): Boolean
+
+    createUser(loginUser: String, emailUser: String, passwordUser: String,
+        accountType: String, imageSrcUser: String,
+        countOfSubscribers: Int, countOfSubscription: Int, countOfPublishedEvents: Int): Users!
+    updateUser(idUser: ID!, loginUser: String, emailUser: String, passwordUser: String,
+        accountType: String, imageSrcUser: String,
+        countOfSubscribers: Int, countOfSubscription: Int, countOfPublishedEvents: Int): Users
+    deleteUser(idUser: ID!): Boolean
 }
 
 type Event {
@@ -51,4 +84,44 @@ type CategoryEvent {
     idCategory: ID!
     nameCategory: String
     events: [Event]
+}
+
+type Chats {
+    idChat: ID!
+    userSender: Users
+    userReceiver: Users
+    messageChat: String
+    sendAt: String
+}
+
+type News {
+    idNews: ID!
+    userNews: Users
+    titleNews: String
+    descNews: String
+    imgSrcNews: String
+    createdAt: String
+}
+
+type Notifications {
+    idNotification: ID!
+    userNotification: Users
+    nameNotification: String
+    imgSrcNotification: String
+}
+
+type Users {
+    idUser: ID!
+    loginUser: String
+    emailUser: String
+    passwordUser: String
+    accountType: String
+    imageSrcUser: String
+    countOfSubscribers: Int
+    countOfSubscription: Int
+    countOfPublishedEvents: Int
+    newsUser: [News]
+    sentMessages: [Chats]
+    receivedMessages: [Chats]
+    notifUser: [Notifications]
 }
