@@ -1,7 +1,7 @@
 package com.levent.demo.models;
 
 import jakarta.persistence.*;
-
+@Entity
 public class Notifications {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
