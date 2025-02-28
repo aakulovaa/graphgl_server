@@ -3,7 +3,9 @@ package com.levent.demo.models;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -16,12 +18,19 @@ public class Users {
     private String passwordUser;
     private String accountType;
     private String imageSrcUser;
-    @Column(columnDefinition = "integer default 0")
-    private Integer countOfSubscribers;
-    @Column(columnDefinition = "integer default 0")
-    private Integer countOfSubscription;
-    @Column(columnDefinition = "integer default 0")
-    private Integer countOfPublishedEvents;
+//    @Column(columnDefinition = "integer default 0")
+//    private Integer countOfSubscribers;
+//    @Column(columnDefinition = "integer default 0")
+//    private Integer countOfSubscription;
+//    @Column(columnDefinition = "integer default 0")
+//    private Integer countOfPublishedEvents;
+    @ManyToMany
+    @JoinTable(
+            name = "user_follows",
+            joinColumns = @JoinColumn(name = "follower_id"),
+            inverseJoinColumns = @JoinColumn(name = "followee_id")
+    )
+    private Set<Users> follows;
 
     @OneToMany(mappedBy = "userNews", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference
@@ -37,24 +46,70 @@ public class Users {
     @OneToMany(mappedBy = "userNotification", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<Notifications> notifUser = new HashSet<>();
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "attended_events",
+            joinColumns = @JoinColumn(name = "id_user"),
+            inverseJoinColumns = @JoinColumn(name = "id_event")
+    )
+    private List<Events> attendedEvents = new ArrayList<>();
+
 
     public Users() {
     }
 
-    public Users(Integer idUser, String loginUser, String emailUser, String passwordUser, String accountType, String imageSrcUser, Integer countOfSubscribers, Integer countOfSubscription, Integer countOfPublishedEvents, Set<News> newsUser, Set<Chats> sentMessages, Set<Chats> receivedMessages, Set<Notifications> notifUser) {
+    public Users(Integer idUser, String loginUser, String emailUser, String passwordUser, String accountType, String imageSrcUser, Set<Users> follows, Set<News> newsUser, Set<Chats> sentMessages, Set<Chats> receivedMessages, Set<Notifications> notifUser, List<Events> attendedEvents) {
         this.idUser = idUser;
         this.loginUser = loginUser;
         this.emailUser = emailUser;
         this.passwordUser = passwordUser;
         this.accountType = accountType;
         this.imageSrcUser = imageSrcUser;
-        this.countOfSubscribers = countOfSubscribers;
-        this.countOfSubscription = countOfSubscription;
-        this.countOfPublishedEvents = countOfPublishedEvents;
+        this.follows = follows;
         this.newsUser = newsUser;
         this.sentMessages = sentMessages;
         this.receivedMessages = receivedMessages;
         this.notifUser = notifUser;
+        this.attendedEvents = attendedEvents;
+    }
+
+    public Users(Integer idUser, String loginUser, String emailUser, String passwordUser, String accountType, String imageSrcUser, Set<News> newsUser, Set<Chats> sentMessages, Set<Chats> receivedMessages, Set<Notifications> notifUser) {
+        this.idUser = idUser;
+        this.loginUser = loginUser;
+        this.emailUser = emailUser;
+        this.passwordUser = passwordUser;
+        this.accountType = accountType;
+        this.imageSrcUser = imageSrcUser;
+
+        this.newsUser = newsUser;
+        this.sentMessages = sentMessages;
+        this.receivedMessages = receivedMessages;
+        this.notifUser = notifUser;
+    }
+
+    public Users(Integer idUser, String loginUser, String emailUser, String passwordUser, String accountType, String imageSrcUser, Set<News> newsUser, Set<Chats> sentMessages, Set<Chats> receivedMessages, Set<Notifications> notifUser, List<Events> attendedEvents) {
+        this.idUser = idUser;
+        this.loginUser = loginUser;
+        this.emailUser = emailUser;
+        this.passwordUser = passwordUser;
+        this.accountType = accountType;
+        this.imageSrcUser = imageSrcUser;
+
+        this.newsUser = newsUser;
+        this.sentMessages = sentMessages;
+        this.receivedMessages = receivedMessages;
+        this.notifUser = notifUser;
+        this.attendedEvents = attendedEvents;
+    }
+
+    public Set<Users> getFollows() {
+        return follows;
+    }
+
+    public void setFollows(Set<Users> follows) {
+        this.follows = follows;
     }
 
     public Integer getIdUser() {
@@ -105,30 +160,6 @@ public class Users {
         this.imageSrcUser = imageSrcUser;
     }
 
-    public Integer getCountOfSubscribers() {
-        return countOfSubscribers;
-    }
-
-    public void setCountOfSubscribers(Integer countOfSubscribers) {
-        this.countOfSubscribers = countOfSubscribers;
-    }
-
-    public Integer getCountOfSubscription() {
-        return countOfSubscription;
-    }
-
-    public void setCountOfSubscription(Integer countOfSubscription) {
-        this.countOfSubscription = countOfSubscription;
-    }
-
-    public Integer getCountOfPublishedEvents() {
-        return countOfPublishedEvents;
-    }
-
-    public void setCountOfPublishedEvents(Integer countOfPublishedEvents) {
-        this.countOfPublishedEvents = countOfPublishedEvents;
-    }
-
     public Set<News> getNewsUser() {
         return newsUser;
     }
@@ -160,4 +191,17 @@ public class Users {
     public void setNotifUser(Set<Notifications> notifUser) {
         this.notifUser = notifUser;
     }
+
+    public List<Events> getAttendedEvents() {
+        return attendedEvents;
+    }
+
+    public void setAttendedEvents(List<Events> attendedEvents) {
+        this.attendedEvents = attendedEvents;
+    }
+
+    public void addAttendedEvent(Events events){
+        this.attendedEvents.add(events);
+    }
+
 }

@@ -19,7 +19,11 @@ type Query {
 
     allUsers: [Users]
     oneUser(idUser: ID!): Users
+
+    recommendedEvents(idUser: ID!): [Event!]!
+    recommendedUsers(idUser: ID!): [Users!]!
 }
+
 
 type Mutation {
     createEvent(nameEvent: String, dateEvent:String,
@@ -54,11 +58,9 @@ type Mutation {
     deleteNotification(idNotification: ID!): Boolean
 
     createUser(loginUser: String, emailUser: String, passwordUser: String,
-        accountType: String, imageSrcUser: String,
-        countOfSubscribers: Int, countOfSubscription: Int, countOfPublishedEvents: Int): Users!
+        accountType: String, imageSrcUser: String): Users!
     updateUser(idUser: ID!, loginUser: String, emailUser: String, passwordUser: String,
-        accountType: String, imageSrcUser: String,
-        countOfSubscribers: Int, countOfSubscription: Int, countOfPublishedEvents: Int): Users
+        accountType: String, imageSrcUser: String): Users
     deleteUser(idUser: ID!): Boolean
 }
 
@@ -117,11 +119,9 @@ type Users {
     passwordUser: String
     accountType: String
     imageSrcUser: String
-    countOfSubscribers: Int
-    countOfSubscription: Int
-    countOfPublishedEvents: Int
     newsUser: [News]
     sentMessages: [Chats]
     receivedMessages: [Chats]
     notifUser: [Notifications]
+    follows: [Users]
 }

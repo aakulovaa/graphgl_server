@@ -39,18 +39,14 @@ public class UserController {
     @MutationMapping
     public Users createUser(@Argument String loginUser,
                             @Argument String emailUser, @Argument String passwordUser,
-                            @Argument String accountType,@Argument String imageSrcUser,
-                            @Argument Integer countOfSubscribers, @Argument Integer countOfSubscription,
-                            @Argument Integer countOfPublishedEvents){
+                            @Argument String accountType,@Argument String imageSrcUser
+                            ){
         Users users = new Users();
         users.setLoginUser(loginUser);
         users.setEmailUser(emailUser);
         users.setPasswordUser(passwordUser);
         users.setAccountType(accountType);
         users.setImageSrcUser(imageSrcUser);
-        users.setCountOfSubscribers(countOfSubscribers);
-        users.setCountOfSubscription(countOfSubscription);
-        users.setCountOfPublishedEvents(countOfPublishedEvents);
         usersRepository.save(users);
         return users;
     }
@@ -59,9 +55,7 @@ public class UserController {
     public Users updateUser(@Argument Integer idUser,
                             @Argument String loginUser,
                             @Argument String emailUser, @Argument String passwordUser,
-                            @Argument String accountType,@Argument String imageSrcUser,
-                            @Argument Integer countOfSubscribers, @Argument Integer countOfSubscription,
-                            @Argument Integer countOfPublishedEvents){
+                            @Argument String accountType,@Argument String imageSrcUser){
         Users users = usersRepository.findById(idUser).orElseThrow(()-> new RuntimeException("User not found"));
         if(loginUser!=null){
             users.setLoginUser(loginUser);
@@ -70,9 +64,6 @@ public class UserController {
         if(passwordUser!=null) users.setPasswordUser(passwordUser);
         if(accountType!=null) users.setAccountType(accountType);
         if(imageSrcUser!=null) users.setImageSrcUser(imageSrcUser);
-        if(countOfSubscribers!=null) users.setCountOfSubscribers(countOfSubscribers);
-        if(countOfSubscription!=null) users.setCountOfSubscription(countOfSubscription);
-        if(countOfPublishedEvents!=null) users.setCountOfPublishedEvents(countOfPublishedEvents);
         return usersRepository.save(users);
     }
 

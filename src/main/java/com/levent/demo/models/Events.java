@@ -4,29 +4,35 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Events {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer idEvent;
-    String nameEvent;
-    String dateEvent;
+    private Integer idEvent;
+    private String nameEvent;
+    private String dateEvent;
     @ManyToOne @JoinColumn(name = "id_city", nullable = false)
             @JsonBackReference
-    CityEvent cityEvent;
-    String addressEvent;
-    String descriptionEvent;
+    private CityEvent cityEvent;
+    private String addressEvent;
+    private String descriptionEvent;
     @Column(columnDefinition = "integer default 0")
-    Integer countOfPeople;
+    private Integer countOfPeople;
     @ManyToOne @JoinColumn(name = "id_category", nullable = false)
             @JsonBackReference
-    CategoryEvent categoryEvent;
-    String imageEvent;
+    private CategoryEvent categoryEvent;
+    private String imageEvent;
+
+    @ManyToMany(mappedBy = "attendedEvents", fetch = FetchType.EAGER)
+    private Set<Users> usersAttended;
 
     public Events() {
     }
 
-    public Events(Integer idEvent, String nameEvent, String dateEvent, CityEvent cityEvent, String addressEvent, String descriptionEvent, Integer countOfPeople, CategoryEvent categoryEvent, String imageEvent) {
+    public Events(Integer idEvent, String nameEvent, String dateEvent, CityEvent cityEvent, String addressEvent, String descriptionEvent, Integer countOfPeople, CategoryEvent categoryEvent, String imageEvent, Set<Users> usersAttended) {
         this.idEvent = idEvent;
         this.nameEvent = nameEvent;
         this.dateEvent = dateEvent;
@@ -36,6 +42,7 @@ public class Events {
         this.countOfPeople = countOfPeople;
         this.categoryEvent = categoryEvent;
         this.imageEvent = imageEvent;
+        this.usersAttended = usersAttended;
     }
 
     public Integer getIdEvent() {
@@ -108,5 +115,13 @@ public class Events {
 
     public void setImageEvent(String imageEvent) {
         this.imageEvent = imageEvent;
+    }
+
+    public Set<Users> getUsersAttended() {
+        return usersAttended;
+    }
+
+    public void setUsersAttended(Set<Users> usersAttended) {
+        this.usersAttended = usersAttended;
     }
 }
