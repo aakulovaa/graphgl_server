@@ -28,7 +28,7 @@ public class GraphBuilderService {
 
             // Добавляем рёбра для избранных товаров
             for (Events favorite : user.getAttendedEvents()) {
-                String productId = "event" + favorite.getIdEvent(); // Префикс "event" для товаров
+                String productId = "event" + favorite.getIdEvent(); // Префикс "event" для мероприятий
                 graph.addEdge(userId, productId, 1.5); // Вес для избранного
             }
 
@@ -37,10 +37,10 @@ public class GraphBuilderService {
                 String followeeId = "user" + followee.getIdUser(); // Префикс "user" для пользователей
                 graph.addEdge(userId, followeeId, 1.0); // Вес для подписки
             }
-// Добавляем рёбра для покупок
+            // Добавляем рёбра для посещенных мероприятий
             for (Events purchase : user.getAttendedEvents()) {
-                String productId = "event" + purchase.getIdEvent(); // Префикс "event" для товаров
-                graph.addEdge(userId, productId, 2.0); // Вес для покупки
+                String productId = "event" + purchase.getIdEvent(); // Префикс "event" для мероприятий
+                graph.addEdge(userId, productId, 2.0); // Вес для мероприятия
             }
         }
 

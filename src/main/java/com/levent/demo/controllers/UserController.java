@@ -36,17 +36,27 @@ public class UserController {
         return usersOptional.get();
     }
 
+    @QueryMapping
+    public Users getUserByEmailAndPassword(@Argument String emailUser, @Argument String passwordUser){
+        Users usersRepositoryByEmailUser = usersRepository.findByEmailUser(emailUser);
+        if (usersRepositoryByEmailUser == null){
+            throw new RuntimeException("User not found");
+        }
+        if (!usersRepositoryByEmailUser.getPasswordUser().equals(passwordUser)){
+            throw new RuntimeException("Invalid password");
+        }
+        return usersRepositoryByEmailUser;
+    }
+
+
     @MutationMapping
     public Users createUser(@Argument String loginUser,
-                            @Argument String emailUser, @Argument String passwordUser,
-                            @Argument String accountType,@Argument String imageSrcUser
+                            @Argument String emailUser, @Argument String passwordUser
                             ){
         Users users = new Users();
         users.setLoginUser(loginUser);
         users.setEmailUser(emailUser);
         users.setPasswordUser(passwordUser);
-        users.setAccountType(accountType);
-        users.setImageSrcUser(imageSrcUser);
         usersRepository.save(users);
         return users;
     }

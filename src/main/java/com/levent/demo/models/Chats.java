@@ -3,8 +3,6 @@ package com.levent.demo.models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
-
 @Entity
 public class Chats {
     @Id

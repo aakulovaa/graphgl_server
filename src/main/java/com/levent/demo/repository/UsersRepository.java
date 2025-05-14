@@ -12,6 +12,9 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
     // Найти пользователей по логину
     List<Users> findByLoginUser(String loginUser);
 
+    // Найти пользователей по email, password
+    Users findByEmailUser(String emailUser);
+
     // Найти пользователей, которые находятся в одном сообществе
     @Query("SELECT u FROM Users u WHERE u.id IN :idUser")
     List<Users> findByCommunity(@Param("idUser") Set<Integer> idUser);
@@ -24,7 +27,7 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
     @Query("SELECT u FROM Users u JOIN u.follows f WHERE f.id = :idUser")
     List<Users> findFollowees(@Param("idUser") Integer idUser);
 
-    // Найти пользователей с их избранными товарами
+    // Найти пользователей с их избранными мероприятиями
     @Query("SELECT u FROM Users u LEFT JOIN FETCH u.attendedEvents LEFT JOIN FETCH u.follows")
     List<Users> findAllWithInteractions();
 }

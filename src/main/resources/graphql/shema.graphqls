@@ -19,6 +19,7 @@ type Query {
 
     allUsers: [Users]
     oneUser(idUser: ID!): Users
+    getUserByEmailAndPassword(emailUser: String!, passwordUser: String):Users
 
     recommendedEvents(idUser: ID!): [Event!]!
     recommendedUsers(idUser: ID!): [Users!]!
@@ -57,8 +58,7 @@ type Mutation {
         nameNotification: String, imgSrcNotification: String): Notifications!
     deleteNotification(idNotification: ID!): Boolean
 
-    createUser(loginUser: String, emailUser: String, passwordUser: String,
-        accountType: String, imageSrcUser: String): Users!
+    createUser(loginUser: String, emailUser: String, passwordUser: String): Users!
     updateUser(idUser: ID!, loginUser: String, emailUser: String, passwordUser: String,
         accountType: String, imageSrcUser: String): Users
     deleteUser(idUser: ID!): Boolean

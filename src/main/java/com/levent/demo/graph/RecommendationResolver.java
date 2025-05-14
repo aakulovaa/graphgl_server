@@ -30,6 +30,7 @@ public class RecommendationResolver {
         return eventRepository.findByCommunity(Set.of(userCommunity));
     }
 
+    
     @QueryMapping
     public List<Users> recommendedUsers(@Argument String idUser) {
         Map<String, Integer> communities = leidenAlgorithm.findCommunities();
