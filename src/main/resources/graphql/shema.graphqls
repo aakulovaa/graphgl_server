@@ -121,10 +121,12 @@ type Users {
     emailUser: String
     passwordUser: String
     accountType: String
+    newsUser: [News]
     sentMessages: [Chats]
     receivedMessages: [Chats]
     followersCount: Int!
     followingCount: Int!
+    follows: [Users]
 }
 
 type FollowResult {

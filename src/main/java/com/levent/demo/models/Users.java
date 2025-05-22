@@ -28,9 +28,15 @@ public class Users {
     private Integer followersCount;
     @Column(columnDefinition = "integer default 0")
     private Integer followingCount;
-
     @Column(columnDefinition = "integer default 0")
     private Integer countOfPublishedEvents;
+    @ManyToMany
+    @JoinTable(
+            name = "user_follows",
+            joinColumns = @JoinColumn(name = "follower_id"),
+            inverseJoinColumns = @JoinColumn(name = "followee_id")
+    )
+    private Set<Users> follows;
 
     @OneToMany(mappedBy = "userNews", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference
@@ -60,6 +66,21 @@ public class Users {
     public Users() {
     }
 
+    public Users(Integer idUser, String loginUser, String emailUser, String passwordUser, String accountType, String imageSrcUser, Set<Users> follows, Set<News> newsUser, Set<Chats> sentMessages, Set<Chats> receivedMessages, Set<Notifications> notifUser, List<Events> attendedEvents) {
+        this.idUser = idUser;
+        this.loginUser = loginUser;
+        this.emailUser = emailUser;
+        this.passwordUser = passwordUser;
+        this.accountType = accountType;
+        this.imageSrcUser = imageSrcUser;
+        this.follows = follows;
+        this.newsUser = newsUser;
+        this.sentMessages = sentMessages;
+        this.receivedMessages = receivedMessages;
+        this.notifUser = notifUser;
+        this.attendedEvents = attendedEvents;
+    }
+
     public Users(Integer idUser, String loginUser, String emailUser, String passwordUser, String accountType, String imageSrcUser, Set<News> newsUser, Set<Chats> sentMessages, Set<Chats> receivedMessages, Set<Notifications> notifUser) {
         this.idUser = idUser;
         this.loginUser = loginUser;
@@ -87,6 +108,14 @@ public class Users {
         this.receivedMessages = receivedMessages;
         this.notifUser = notifUser;
         this.attendedEvents = attendedEvents;
+    }
+
+    public Set<Users> getFollows() {
+        return follows;
+    }
+
+    public void setFollows(Set<Users> follows) {
+        this.follows = follows;
     }
 
     public Integer getIdUser() {
@@ -181,6 +210,23 @@ public class Users {
         this.attendedEvents.add(events);
     }
 
+    public Users(Integer idUser, String loginUser, String emailUser, String passwordUser, String accountType, String imageSrcUser, Integer followersCount, Integer followingCount, Integer countOfPublishedEvents, Set<Users> follows, Set<News> newsUser, Set<Chats> sentMessages, Set<Chats> receivedMessages, Set<Notifications> notifUser, List<Events> attendedEvents) {
+        this.idUser = idUser;
+        this.loginUser = loginUser;
+        this.emailUser = emailUser;
+        this.passwordUser = passwordUser;
+        this.accountType = accountType;
+        this.imageSrcUser = imageSrcUser;
+        this.followersCount = followersCount;
+        this.followingCount = followingCount;
+        this.countOfPublishedEvents = countOfPublishedEvents;
+        this.follows = follows;
+        this.newsUser = newsUser;
+        this.sentMessages = sentMessages;
+        this.receivedMessages = receivedMessages;
+        this.notifUser = notifUser;
+        this.attendedEvents = attendedEvents;
+    }
 
     public Integer getFollowersCount() {
         return followersCount;
