@@ -62,7 +62,10 @@ type Mutation {
     updateUser(idUser: ID!, loginUser: String, emailUser: String, passwordUser: String,
         accountType: String, imageSrcUser: String): Users
     deleteUser(idUser: ID!): Boolean
+
+    followUser(idCurrentUser: ID!, idUser: ID!): FollowResult!
 }
+
 
 type Event {
     idEvent: ID!
@@ -118,10 +121,13 @@ type Users {
     emailUser: String
     passwordUser: String
     accountType: String
-    imageSrcUser: String
-    newsUser: [News]
     sentMessages: [Chats]
     receivedMessages: [Chats]
-    notifUser: [Notifications]
-    follows: [Users]
+    followersCount: Int!
+    followingCount: Int!
+}
+
+type FollowResult {
+    user: Users!
+    currentUser: Users!
 }

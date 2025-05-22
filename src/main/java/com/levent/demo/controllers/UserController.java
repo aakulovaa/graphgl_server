@@ -1,11 +1,14 @@
 package com.levent.demo.controllers;
 
+import com.levent.demo.models.Follow;
 import com.levent.demo.models.Notifications;
 import com.levent.demo.models.Users;
+import com.levent.demo.repository.FollowRepository;
 import com.levent.demo.repository.NotificationsRepository;
 import com.levent.demo.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.ContextValue;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
@@ -17,9 +20,11 @@ public class UserController {
 
     @Autowired
     private final UsersRepository usersRepository;
+    private final FollowRepository followRepository;
 
-    public UserController(UsersRepository usersRepository) {
+    public UserController(UsersRepository usersRepository, FollowRepository followRepository) {
         this.usersRepository = usersRepository;
+        this.followRepository = followRepository;
     }
 
     @QueryMapping
@@ -81,5 +86,44 @@ public class UserController {
     public Boolean deleteUser(@Argument Integer idUser){
         usersRepository.deleteById(idUser);
         return true;
+    }
+
+    @MutationMapping
+    public FollowResult followUser(@Argument Integer idCurrentUser, @Argument Integer idUser) {
+
+        Users currentUser = usersRepository.findById(idCurrentUser)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Users userToFollow = usersRepository.findById(idUser)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (idCurrentUser.equals(idUser)) {
+            throw new RuntimeException("Cannot follow yourself");
+        }
+
+        boolean isFollowing = followRepository.existsByFollowerIdUserAndFollowingIdUser(
+                idCurrentUser, idUser);
+
+        if (isFollowing) {
+            followRepository.deleteByFollowerIdUserAndFollowingIdUser(
+                    idCurrentUser, idUser);
+        } else {
+            Follow follow = new Follow();
+            follow.setFollower(currentUser);
+            follow.setFollowing(userToFollow);
+            followRepository.save(follow);
+        }
+
+        // Обновляем счетчики
+        int newFollowersCount = followRepository.countFollowers(idUser);
+        int newFollowingCount = followRepository.countFollowing(idCurrentUser);
+
+        userToFollow.setFollowersCount(newFollowersCount);
+        currentUser.setFollowingCount(newFollowingCount);
+
+        usersRepository.save(userToFollow);
+        usersRepository.save(currentUser);
+
+        return new FollowResult(userToFollow, currentUser);
     }
 }

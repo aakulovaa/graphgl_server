@@ -18,19 +18,19 @@ public class Users {
     private String passwordUser;
     private String accountType;
     private String imageSrcUser;
-//    @Column(columnDefinition = "integer default 0")
-//    private Integer countOfSubscribers;
-//    @Column(columnDefinition = "integer default 0")
-//    private Integer countOfSubscription;
-//    @Column(columnDefinition = "integer default 0")
-//    private Integer countOfPublishedEvents;
-    @ManyToMany
-    @JoinTable(
-            name = "user_follows",
-            joinColumns = @JoinColumn(name = "follower_id"),
-            inverseJoinColumns = @JoinColumn(name = "followee_id")
-    )
-    private Set<Users> follows;
+
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL)
+    private Set<Follow> following = new HashSet<>();
+    @OneToMany(mappedBy = "following", cascade = CascadeType.ALL)
+    private Set<Follow> followers = new HashSet<>();
+
+    @Column(columnDefinition = "integer default 0")
+    private Integer followersCount;
+    @Column(columnDefinition = "integer default 0")
+    private Integer followingCount;
+
+    @Column(columnDefinition = "integer default 0")
+    private Integer countOfPublishedEvents;
 
     @OneToMany(mappedBy = "userNews", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference
@@ -60,21 +60,6 @@ public class Users {
     public Users() {
     }
 
-    public Users(Integer idUser, String loginUser, String emailUser, String passwordUser, String accountType, String imageSrcUser, Set<Users> follows, Set<News> newsUser, Set<Chats> sentMessages, Set<Chats> receivedMessages, Set<Notifications> notifUser, List<Events> attendedEvents) {
-        this.idUser = idUser;
-        this.loginUser = loginUser;
-        this.emailUser = emailUser;
-        this.passwordUser = passwordUser;
-        this.accountType = accountType;
-        this.imageSrcUser = imageSrcUser;
-        this.follows = follows;
-        this.newsUser = newsUser;
-        this.sentMessages = sentMessages;
-        this.receivedMessages = receivedMessages;
-        this.notifUser = notifUser;
-        this.attendedEvents = attendedEvents;
-    }
-
     public Users(Integer idUser, String loginUser, String emailUser, String passwordUser, String accountType, String imageSrcUser, Set<News> newsUser, Set<Chats> sentMessages, Set<Chats> receivedMessages, Set<Notifications> notifUser) {
         this.idUser = idUser;
         this.loginUser = loginUser;
@@ -102,14 +87,6 @@ public class Users {
         this.receivedMessages = receivedMessages;
         this.notifUser = notifUser;
         this.attendedEvents = attendedEvents;
-    }
-
-    public Set<Users> getFollows() {
-        return follows;
-    }
-
-    public void setFollows(Set<Users> follows) {
-        this.follows = follows;
     }
 
     public Integer getIdUser() {
@@ -204,4 +181,45 @@ public class Users {
         this.attendedEvents.add(events);
     }
 
+
+    public Integer getFollowersCount() {
+        return followersCount;
+    }
+
+    public void setFollowersCount(Integer followersCount) {
+        this.followersCount = followersCount;
+    }
+
+    public Integer getFollowingCount() {
+        return followingCount;
+    }
+
+    public void setFollowingCount(Integer followingCount) {
+        this.followingCount = followingCount;
+    }
+
+    public Integer getCountOfPublishedEvents() {
+        return countOfPublishedEvents;
+    }
+
+    public void setCountOfPublishedEvents(Integer countOfPublishedEvents) {
+        this.countOfPublishedEvents = countOfPublishedEvents;
+    }
+
+
+    public Set<Follow> getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(Set<Follow> following) {
+        this.following = following;
+    }
+
+    public Set<Follow> getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(Set<Follow> followers) {
+        this.followers = followers;
+    }
 }
