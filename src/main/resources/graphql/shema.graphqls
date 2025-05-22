@@ -20,6 +20,7 @@ type Query {
     allUsers: [Users]
     oneUser(idUser: ID!): Users
     getUserByEmailAndPassword(emailUser: String!, passwordUser: String):Users
+    getFollowStatus(idCurrentUser: ID!, idUser: ID!): Boolean!
 
     recommendedEvents(idUser: ID!): [Event!]!
     recommendedUsers(idUser: ID!): [Users!]!

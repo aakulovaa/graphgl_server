@@ -53,6 +53,11 @@ public class UserController {
         return usersRepositoryByEmailUser;
     }
 
+    @QueryMapping
+    public Boolean getFollowStatus(@Argument Integer idCurrentUser, @Argument Integer idUser){
+        return followRepository.existsByFollowerIdUserAndFollowingIdUser(idCurrentUser, idUser);
+    }
+
 
     @MutationMapping
     public Users createUser(@Argument String loginUser,
