@@ -24,6 +24,9 @@ type Query {
 
     recommendedEvents(idUser: ID!): [Event!]!
     recommendedUsers(idUser: ID!): [Users!]!
+
+    allFollows: [Follow]
+    oneFollow(idCurrentUser: ID!, idUser: ID!): Follow
 }
 
 
@@ -65,6 +68,7 @@ type Mutation {
     deleteUser(idUser: ID!): Boolean
 
     followUser(idCurrentUser: ID!, idUser: ID!): FollowResult!
+    deleteFollow(idFollow: ID!): Boolean
 }
 
 
@@ -128,6 +132,12 @@ type Users {
     followersCount: Int!
     followingCount: Int!
     follows: [Users]
+}
+
+type Follow {
+    idFollow: ID!
+    follower: Users
+    following: Users
 }
 
 type FollowResult {

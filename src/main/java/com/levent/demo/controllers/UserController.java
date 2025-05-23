@@ -87,9 +87,29 @@ public class UserController {
         return usersRepository.save(users);
     }
 
+    @QueryMapping
+    public List<Follow> allFollows(){
+        return followRepository.findAll();
+    }
+
+    @QueryMapping
+    public Follow oneFollow(@Argument Integer idCurrentUser, @Argument Integer idUser){
+        Optional<Follow> followOptional = followRepository.selectByFollowerIdUserAndFollowingIdUser(idCurrentUser, idUser);
+        if (followOptional.isEmpty()){
+            throw new RuntimeException("Follow not found");
+        }
+        return followOptional.get();
+    }
+
     @MutationMapping
     public Boolean deleteUser(@Argument Integer idUser){
         usersRepository.deleteById(idUser);
+        return true;
+    }
+
+    @MutationMapping
+    public Boolean deleteFollow(@Argument Integer idFollow){
+        followRepository.deleteById(idFollow);
         return true;
     }
 
@@ -110,8 +130,7 @@ public class UserController {
                 idCurrentUser, idUser);
 
         if (isFollowing) {
-            followRepository.deleteByFollowerIdUserAndFollowingIdUser(
-                    idCurrentUser, idUser);
+            deleteFollow(oneFollow(idCurrentUser, idUser).getIdFollow());
         } else {
             Follow follow = new Follow();
             follow.setFollower(currentUser);
