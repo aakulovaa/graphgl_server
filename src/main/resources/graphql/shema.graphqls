@@ -67,6 +67,7 @@ type Mutation {
         accountType: String, imageSrcUser: String): Users
     updateUserAccType(idUser: ID!, accountType: String): Users
     updateLoginUser(idUser: ID!, loginUser: String): Users
+    updatePasswordUser(idUser: ID!, passwordUser: String): Users
     deleteUser(idUser: ID!): Boolean
 
     followUser(idCurrentUser: ID!, idUser: ID!): FollowResult!

@@ -85,6 +85,16 @@ public class UserController {
     }
 
     @MutationMapping
+    public Users updatePasswordUser(@Argument Integer idUser,
+                                 @Argument String passwordUser){
+        Users users = usersRepository.findById(idUser).orElseThrow(()-> new RuntimeException("User not found"));
+        if(passwordUser!=null){
+            users.setPasswordUser(passwordUser);
+        }
+        return usersRepository.save(users);
+    }
+
+    @MutationMapping
     public Users updateLoginUser(@Argument Integer idUser,
                             @Argument String loginUser){
         Users users = usersRepository.findById(idUser).orElseThrow(()-> new RuntimeException("User not found"));
