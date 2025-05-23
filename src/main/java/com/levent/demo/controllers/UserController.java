@@ -1,14 +1,11 @@
 package com.levent.demo.controllers;
 
 import com.levent.demo.models.Follow;
-import com.levent.demo.models.Notifications;
 import com.levent.demo.models.Users;
 import com.levent.demo.repository.FollowRepository;
-import com.levent.demo.repository.NotificationsRepository;
 import com.levent.demo.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
-import org.springframework.graphql.data.method.annotation.ContextValue;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
@@ -87,6 +84,14 @@ public class UserController {
         return usersRepository.save(users);
     }
 
+    @MutationMapping
+    public Users updateUserAccType(@Argument Integer idUser,
+                            @Argument String accountType){
+        Users users = usersRepository.findById(idUser).orElseThrow(()-> new RuntimeException("User not found"));
+        if(accountType!=null) users.setAccountType(accountType);
+        return usersRepository.save(users);
+    }
+
     @QueryMapping
     public List<Follow> allFollows(){
         return followRepository.findAll();
@@ -108,9 +113,8 @@ public class UserController {
     }
 
     @MutationMapping
-    public Boolean deleteFollow(@Argument Integer idFollow){
+    public void deleteFollow(@Argument Integer idFollow){
         followRepository.deleteById(idFollow);
-        return true;
     }
 
     @MutationMapping
