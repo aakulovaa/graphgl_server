@@ -3,9 +3,7 @@ package com.levent.demo.models;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -28,8 +26,17 @@ public class Users {
     private Integer followersCount;
     @Column(columnDefinition = "integer default 0")
     private Integer followingCount;
+
+
+    @Column(columnDefinition = "integer default 0")
+    private Integer countOfAttendedEvents;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<Attended> eventsAttended = new HashSet<>();
+
+
     @Column(columnDefinition = "integer default 0")
     private Integer countOfPublishedEvents;
+
     @ManyToMany
     @JoinTable(
             name = "user_follows",
@@ -52,6 +59,7 @@ public class Users {
     @OneToMany(mappedBy = "userNotification", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<Notifications> notifUser = new HashSet<>();
 
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE
@@ -60,13 +68,13 @@ public class Users {
             joinColumns = @JoinColumn(name = "id_user"),
             inverseJoinColumns = @JoinColumn(name = "id_event")
     )
-    private List<Events> attendedEvents = new ArrayList<>();
+    private Set<Events> attendedEvents;
 
 
     public Users() {
     }
 
-    public Users(Integer idUser, String loginUser, String emailUser, String passwordUser, String accountType, String imageSrcUser, Set<Users> follows, Set<News> newsUser, Set<Chats> sentMessages, Set<Chats> receivedMessages, Set<Notifications> notifUser, List<Events> attendedEvents) {
+    public Users(Integer idUser, String loginUser, String emailUser, String passwordUser, String accountType, String imageSrcUser, Set<Users> follows, Set<News> newsUser, Set<Chats> sentMessages, Set<Chats> receivedMessages, Set<Notifications> notifUser, Set<Events> attendedEvents) {
         this.idUser = idUser;
         this.loginUser = loginUser;
         this.emailUser = emailUser;
@@ -95,7 +103,7 @@ public class Users {
         this.notifUser = notifUser;
     }
 
-    public Users(Integer idUser, String loginUser, String emailUser, String passwordUser, String accountType, String imageSrcUser, Set<News> newsUser, Set<Chats> sentMessages, Set<Chats> receivedMessages, Set<Notifications> notifUser, List<Events> attendedEvents) {
+    public Users(Integer idUser, String loginUser, String emailUser, String passwordUser, String accountType, String imageSrcUser, Set<News> newsUser, Set<Chats> sentMessages, Set<Chats> receivedMessages, Set<Notifications> notifUser, Set<Events> attendedEvents) {
         this.idUser = idUser;
         this.loginUser = loginUser;
         this.emailUser = emailUser;
@@ -198,11 +206,11 @@ public class Users {
         this.notifUser = notifUser;
     }
 
-    public List<Events> getAttendedEvents() {
+    public Set<Events> getAttendedEvents() {
         return attendedEvents;
     }
 
-    public void setAttendedEvents(List<Events> attendedEvents) {
+    public void setAttendedEvents(Set<Events> attendedEvents) {
         this.attendedEvents = attendedEvents;
     }
 
@@ -210,7 +218,7 @@ public class Users {
         this.attendedEvents.add(events);
     }
 
-    public Users(Integer idUser, String loginUser, String emailUser, String passwordUser, String accountType, String imageSrcUser, Integer followersCount, Integer followingCount, Integer countOfPublishedEvents, Set<Users> follows, Set<News> newsUser, Set<Chats> sentMessages, Set<Chats> receivedMessages, Set<Notifications> notifUser, List<Events> attendedEvents) {
+    public Users(Integer idUser, String loginUser, String emailUser, String passwordUser, String accountType, String imageSrcUser, Integer followersCount, Integer followingCount, Integer countOfPublishedEvents, Set<Users> follows, Set<News> newsUser, Set<Chats> sentMessages, Set<Chats> receivedMessages, Set<Notifications> notifUser, Set<Events> attendedEvents) {
         this.idUser = idUser;
         this.loginUser = loginUser;
         this.emailUser = emailUser;
@@ -225,6 +233,27 @@ public class Users {
         this.sentMessages = sentMessages;
         this.receivedMessages = receivedMessages;
         this.notifUser = notifUser;
+        this.attendedEvents = attendedEvents;
+    }
+
+    public Users(Integer idUser, String loginUser, String emailUser, String passwordUser, String accountType, String imageSrcUser, Set<Follow> following, Set<Follow> followers, Integer followersCount, Integer followingCount, Integer countOfPublishedEvents, Set<Users> follows, Set<News> newsUser, Set<Chats> sentMessages, Set<Chats> receivedMessages, Set<Notifications> notifUser, Integer countOfAttendedEvents, Set<Events> attendedEvents) {
+        this.idUser = idUser;
+        this.loginUser = loginUser;
+        this.emailUser = emailUser;
+        this.passwordUser = passwordUser;
+        this.accountType = accountType;
+        this.imageSrcUser = imageSrcUser;
+        this.following = following;
+        this.followers = followers;
+        this.followersCount = followersCount;
+        this.followingCount = followingCount;
+        this.countOfPublishedEvents = countOfPublishedEvents;
+        this.follows = follows;
+        this.newsUser = newsUser;
+        this.sentMessages = sentMessages;
+        this.receivedMessages = receivedMessages;
+        this.notifUser = notifUser;
+        this.countOfAttendedEvents = countOfAttendedEvents;
         this.attendedEvents = attendedEvents;
     }
 
@@ -267,5 +296,43 @@ public class Users {
 
     public void setFollowers(Set<Follow> followers) {
         this.followers = followers;
+    }
+
+    public Integer getCountOfAttendedEvents() {
+        return countOfAttendedEvents;
+    }
+
+    public void setCountOfAttendedEvents(Integer countOfAttendedEvents) {
+        this.countOfAttendedEvents = countOfAttendedEvents;
+    }
+
+    public Users(Integer idUser, String loginUser, String emailUser, String passwordUser, String accountType, String imageSrcUser, Set<Follow> following, Set<Follow> followers, Integer followersCount, Integer followingCount, Integer countOfAttendedEvents, Set<Attended> eventsAttended, Integer countOfPublishedEvents, Set<Users> follows, Set<News> newsUser, Set<Chats> sentMessages, Set<Chats> receivedMessages, Set<Notifications> notifUser, Set<Events> attendedEvents) {
+        this.idUser = idUser;
+        this.loginUser = loginUser;
+        this.emailUser = emailUser;
+        this.passwordUser = passwordUser;
+        this.accountType = accountType;
+        this.imageSrcUser = imageSrcUser;
+        this.following = following;
+        this.followers = followers;
+        this.followersCount = followersCount;
+        this.followingCount = followingCount;
+        this.countOfAttendedEvents = countOfAttendedEvents;
+        this.eventsAttended = eventsAttended;
+        this.countOfPublishedEvents = countOfPublishedEvents;
+        this.follows = follows;
+        this.newsUser = newsUser;
+        this.sentMessages = sentMessages;
+        this.receivedMessages = receivedMessages;
+        this.notifUser = notifUser;
+        this.attendedEvents = attendedEvents;
+    }
+
+    public Set<Attended> getEventsAttended() {
+        return eventsAttended;
+    }
+
+    public void setEventsAttended(Set<Attended> eventsAttended) {
+        this.eventsAttended = eventsAttended;
     }
 }

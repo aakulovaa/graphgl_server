@@ -27,6 +27,10 @@ type Query {
 
     allFollows: [Follow]
     oneFollow(idCurrentUser: ID!, idUser: ID!): Follow
+
+    allAttended: [Attended]
+    oneAttended(idCurrentUser: ID!, idCurrentEvent: ID!): Attended
+    allAttendedByUser(idCurrentUser: ID!): Attended
 }
 
 
@@ -72,6 +76,9 @@ type Mutation {
 
     followUser(idCurrentUser: ID!, idUser: ID!): FollowResult!
     deleteFollow(idFollow: ID!): Boolean
+
+    attendedEvent(idCurrentUser: ID!, idCurrentEvent: ID!): AttendedResult!
+    deleteAttended(idAttended: ID!): Boolean
 }
 
 
@@ -135,6 +142,17 @@ type Users {
     followersCount: Int!
     followingCount: Int!
     follows: [Users]
+    countOfAttendedEvents: Int!
+}
+
+type Attended {
+    idAttended: ID!
+    user: Users
+    event: Event
+}
+type AttendedResult {
+    currentUser: Users!
+    currentEvent: Event!
 }
 
 type Follow {

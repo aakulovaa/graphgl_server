@@ -1,7 +1,11 @@
 package com.levent.demo.controllers;
 
+import com.levent.demo.models.Attended;
+import com.levent.demo.models.Events;
 import com.levent.demo.models.Follow;
 import com.levent.demo.models.Users;
+import com.levent.demo.repository.AttendedRepository;
+import com.levent.demo.repository.EventRepository;
 import com.levent.demo.repository.FollowRepository;
 import com.levent.demo.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +22,14 @@ public class UserController {
     @Autowired
     private final UsersRepository usersRepository;
     private final FollowRepository followRepository;
+    private final AttendedRepository attendedRepository;
+    private final EventRepository eventRepository;
 
-    public UserController(UsersRepository usersRepository, FollowRepository followRepository) {
+    public UserController(UsersRepository usersRepository, FollowRepository followRepository, AttendedRepository attendedRepository, EventRepository eventRepository) {
         this.usersRepository = usersRepository;
         this.followRepository = followRepository;
+        this.attendedRepository = attendedRepository;
+        this.eventRepository = eventRepository;
     }
 
     @QueryMapping
@@ -174,4 +182,67 @@ public class UserController {
 
         return new FollowResult(userToFollow, currentUser);
     }
+
+    @QueryMapping
+    public List<Attended> allAttended(){
+        return attendedRepository.findAll();
+    }
+
+    @QueryMapping
+    public Attended oneAttended(@Argument Integer idCurrentUser, @Argument Integer idCurrentEvent){
+        Optional<Attended> attendOptional = attendedRepository.selectByUserIdUserAndEventIdEvent(idCurrentUser, idCurrentEvent);
+        if (attendOptional.isEmpty()){
+            throw new RuntimeException("Attend not found");
+        }
+        return attendOptional.get();
+    }
+
+    @QueryMapping
+    public Attended allAttendedByUser(@Argument Integer idCurrentUser){
+        Optional<Attended> attendOptional = attendedRepository.selectByUserIdUser(idCurrentUser);
+        if (attendOptional.isEmpty()){
+            throw new RuntimeException("Attend not found");
+        }
+        return attendOptional.get();
+    }
+
+    @MutationMapping
+    public void deleteAttended(@Argument Integer idAttended){
+        attendedRepository.deleteById(idAttended);
+    }
+
+    @MutationMapping
+    public AttendedResult attendedEvent(@Argument Integer idCurrentUser, @Argument Integer idCurrentEvent) {
+
+        Users currentUser = usersRepository.findById(idCurrentUser)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Events currentEvent = eventRepository.findById(idCurrentEvent)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+
+        boolean isAttending = attendedRepository.existsByUserIdUserAndEventIdEvent(
+                idCurrentUser, idCurrentEvent);
+
+        if (isAttending) {
+            deleteAttended(oneAttended(idCurrentUser, idCurrentEvent).getIdAttended());
+        } else {
+            Attended attended = new Attended();
+            attended.setUser(currentUser);
+            attended.setEvent(currentEvent);
+            attendedRepository.save(attended);
+        }
+
+        // Обновляем счетчики
+        int newUsersCount = attendedRepository.countUsers(idCurrentUser);
+        int newEventsCount = attendedRepository.countEvents(idCurrentEvent);
+
+        currentUser.setCountOfAttendedEvents(newEventsCount);
+        currentEvent.setCountOfPeople(newUsersCount);
+
+        usersRepository.save(currentUser);
+        eventRepository.save(currentEvent);
+
+        return new AttendedResult(currentUser, currentEvent);
+    }
+
 }

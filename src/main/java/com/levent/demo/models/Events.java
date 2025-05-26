@@ -19,8 +19,12 @@ public class Events {
     private CityEvent cityEvent;
     private String addressEvent;
     private String descriptionEvent;
+
     @Column(columnDefinition = "integer default 0")
     private Integer countOfPeople;
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    private Set<Attended> usersAttend = new HashSet<>();
+
     @ManyToOne @JoinColumn(name = "id_category", nullable = false)
             @JsonBackReference
     private CategoryEvent categoryEvent;
@@ -122,6 +126,28 @@ public class Events {
     }
 
     public void setUsersAttended(Set<Users> usersAttended) {
+        this.usersAttended = usersAttended;
+    }
+
+    public Set<Attended> getUsersAttend() {
+        return usersAttend;
+    }
+
+    public void setUsersAttend(Set<Attended> usersAttend) {
+        this.usersAttend = usersAttend;
+    }
+
+    public Events(Integer idEvent, String nameEvent, String dateEvent, CityEvent cityEvent, String addressEvent, String descriptionEvent, Integer countOfPeople, Set<Attended> usersAttend, CategoryEvent categoryEvent, String imageEvent, Set<Users> usersAttended) {
+        this.idEvent = idEvent;
+        this.nameEvent = nameEvent;
+        this.dateEvent = dateEvent;
+        this.cityEvent = cityEvent;
+        this.addressEvent = addressEvent;
+        this.descriptionEvent = descriptionEvent;
+        this.countOfPeople = countOfPeople;
+        this.usersAttend = usersAttend;
+        this.categoryEvent = categoryEvent;
+        this.imageEvent = imageEvent;
         this.usersAttended = usersAttended;
     }
 }
