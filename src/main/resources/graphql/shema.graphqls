@@ -30,7 +30,7 @@ type Query {
 
     allAttended: [Attended]
     oneAttended(idCurrentUser: ID!, idCurrentEvent: ID!): Attended
-    allAttendedByUser(idCurrentUser: ID!): Attended
+    allAttendedByUser(idCurrentUser: ID!): [Attended]
 }
 
 

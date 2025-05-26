@@ -198,12 +198,12 @@ public class UserController {
     }
 
     @QueryMapping
-    public Attended allAttendedByUser(@Argument Integer idCurrentUser){
-        Optional<Attended> attendOptional = attendedRepository.selectByUserIdUser(idCurrentUser);
+    public List<Attended> allAttendedByUser(@Argument Integer idCurrentUser){
+        List<Attended> attendOptional = attendedRepository.selectByUserIdUser(idCurrentUser);
         if (attendOptional.isEmpty()){
             throw new RuntimeException("Attend not found");
         }
-        return attendOptional.get();
+        return attendOptional;
     }
 
     @MutationMapping
@@ -236,8 +236,8 @@ public class UserController {
         int newUsersCount = attendedRepository.countUsers(idCurrentUser);
         int newEventsCount = attendedRepository.countEvents(idCurrentEvent);
 
-        currentUser.setCountOfAttendedEvents(newEventsCount);
-        currentEvent.setCountOfPeople(newUsersCount);
+        currentUser.setCountOfAttendedEvents(newUsersCount);
+        currentEvent.setCountOfPeople(newEventsCount);
 
         usersRepository.save(currentUser);
         eventRepository.save(currentEvent);
