@@ -6,6 +6,7 @@ import com.levent.demo.repository.UsersRepository;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class UserRecommender {
@@ -16,10 +17,15 @@ public class UserRecommender {
     }
 
     public List<Users> recommendUsers(Users user, Map<String, Integer> communities) {
-        int userCommunity = communities.get(user.getIdUser());
-        return userRepository.findByCommunity(Collections.singleton(userCommunity))
-                .stream()
-                .filter(u -> !user.getFollows().contains(u))
-                .collect(Collectors.toList());
+        int userCommunity = communities.get("user" + user.getIdUser());
+
+        // Получаем пользователей из того же сообщества
+        List<Users> communityUsers = userRepository.findByCommunity(Set.of(userCommunity));
+
+        // Фильтруем тех, на кого пользователь уже подписан
+        return communityUsers.stream()
+                .filter(u -> !user.getFollowing().contains(u))
+                .filter(u -> !u.getIdUser().equals(user.getIdUser()))
+                .toList();
     }
 }

@@ -17,37 +17,33 @@ public class RecommendationResolver {
     private final LeidenAlgorithm leidenAlgorithm;
     private final EventRepository eventRepository;
     private final UsersRepository userRepository;
+    private final EventRecommender eventRecommender;
+    private final UserRecommender userRecommender;
 
-    public RecommendationResolver(LeidenAlgorithm leidenAlgorithm, EventRepository eventRepository, UsersRepository userRepository) {
+    public RecommendationResolver(LeidenAlgorithm leidenAlgorithm, EventRepository eventRepository, UsersRepository userRepository, EventRecommender eventRecommender, UserRecommender userRecommender) {
         this.leidenAlgorithm = leidenAlgorithm;
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
+        this.eventRecommender = eventRecommender;
+        this.userRecommender = userRecommender;
     }
     @QueryMapping
-    public List<Events> recommendedEvents(@Argument String idUser) {
+    public List<Events> recommendedEvents(@Argument Integer idUser) {
+        Users user = userRepository.findById(idUser)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
         Map<String, Integer> communities = leidenAlgorithm.findCommunities();
-        int userCommunity = communities.get(idUser);
-        return eventRepository.findByCommunity(Set.of(userCommunity));
+        return eventRecommender.recommendEvents(user, communities);
     }
 
     
     @QueryMapping
-    public List<Users> recommendedUsers(@Argument String idUser) {
+    public List<Users> recommendedUsers(@Argument Integer idUser) {
+        Users user = userRepository.findById(idUser)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
         Map<String, Integer> communities = leidenAlgorithm.findCommunities();
-        if (communities.isEmpty()) {
-            throw new IllegalStateException("Communities are empty. Check if the graph is populated.");
-        }
-
-        Integer communityId = communities.get(idUser.toString()); // Приводим userId к String
-        if (communityId == null) {
-            throw new IllegalArgumentException("User with ID " + idUser + " not found in communities.");
-        }
-
-        System.out.println("Communities: " + communities);
-        System.out.println("Community ID: " + communityId);
-        System.out.println("Recommended users: " + userRepository.findByCommunity(Set.of(communityId)));
-
-        return userRepository.findByCommunity(Set.of(communityId));
+        return userRecommender.recommendUsers(user,communities);
     }
 
 }

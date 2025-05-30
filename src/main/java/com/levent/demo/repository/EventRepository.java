@@ -22,16 +22,5 @@ public interface EventRepository extends JpaRepository<Events, Integer> {
     @Query("SELECT e FROM Events e WHERE e.id IN :idEvent")
     List<Events> findByCommunity(@Param("idEvent") Set<Integer> idEvent);
 
-//    // Найти товары, добавленные в избранное пользователем
-//    @Query("SELECT e FROM Events e JOIN e.favoritedBy u WHERE u.id = :idEvent")
-//    List<Events> findSavedByUser(@Param("idEvent") Integer idEvent);
-
-    // Найти товары, купленные пользователем
-    @Query("SELECT e FROM Events e JOIN e.usersAttended u WHERE u.id = :idEvent")
-    List<Events> findAttendedByUser(@Param("idEvent") Integer idEvent);
-
-    // Найти товары с их категориями
-    @Query("SELECT e FROM Events e LEFT JOIN FETCH e.categoryEvent")
-    List<Events> findAllWithCategory();
 
 }
